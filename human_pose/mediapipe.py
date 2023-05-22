@@ -12,7 +12,7 @@ holistic_model = mp_holistic.Holistic(
 # Initializing the drawing utils for drawing the facial landmarks on image
 mp_drawing = mp.solutions.drawing_utils
 
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(2)
  
 # Initializing current time and precious time for calculating the FPS
 previousTime = 0
