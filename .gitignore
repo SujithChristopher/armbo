@@ -179,3 +179,4 @@ models/*
 images
 ArUco_detection/aruco-2
 ArUco_detection/runs
+dataset/*
