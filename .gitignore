@@ -181,3 +181,4 @@ ArUco_detection/aruco-2
 ArUco_detection/runs
 dataset/*
 dataset_processed/*
+ipy_notebooks/runs/*
