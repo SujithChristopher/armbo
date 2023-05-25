@@ -17,7 +17,7 @@ fn rs_time() -> PyResult<f64> {
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn armbo(_py: Python, m: &PyModule) -> PyResult<()> {
+fn deep_vision(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     m.add_function(wrap_pyfunction!(rs_time, m)?)?;
     Ok(())

@@ -182,3 +182,4 @@ ArUco_detection/runs
 dataset/*
 dataset_processed/*
 ipy_notebooks/runs/*
+recorded_data/*
