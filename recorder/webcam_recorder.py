@@ -28,11 +28,11 @@ class RecordData:
         self.cam_device = self.device_list.index("Lenovo FHD Webcam")
 
         """webcam parameters for recording"""
-        self.yResRs = 670
-        self.xResRs = 750
+        self.yResRs = 640
+        self.xResRs = 640
 
-        self.xPos = 274 # fixed parameters
-        self.yPos = 112
+        self.xPos = 320 # fixed parameters
+        self.yPos = 40
         self.record_camera = record_camera
         self.start_recording = False
         self._pth = _pth
@@ -65,9 +65,11 @@ class RecordData:
             if ret:
                 if self.isColor:
                     gray_image = frame[self.yPos:self.yPos + self.yResRs, self.xPos:self.xPos + self.xResRs].copy()
+                    # gray_image = frame.copy()
                 else:
                     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     gray_image = gray_image[self.yPos:self.yPos + self.yResRs, self.xPos:self.xPos + self.xResRs].copy()
+                    # gray_image = gray_image.copy()
 
                 if self.record_camera and self.start_recording:
                     _packed_file = mp.packb(gray_image, default=mpn.encode)
@@ -170,7 +172,7 @@ if __name__ == "__main__":
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None # this is default do not change, path gets updated by your input
-        _folder_name = "omni_cam_9d0f_may_8_2023" # this is the parent folder name where the data will be saved
+        _folder_name = "cam_may_25_5_2023" # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")
