@@ -61,7 +61,7 @@ class RecordData:
         # new_frame_time = 0
 
         while True:
-            ret, frame = cap.read()
+            ret, frame = cap.read() 
             if ret:
                 if self.isColor:
                     gray_image = frame[self.yPos:self.yPos + self.yResRs, self.xPos:self.xPos + self.xResRs].copy()
