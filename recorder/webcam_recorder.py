@@ -13,26 +13,34 @@ import multiprocessing
 from threading import Thread
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from sensors import SerialPort
-from support.pymf import get_MF_devices as get_camera_list
-# import support.pymf
+from PyQt6.QtMultimedia import * #to get available dameras
 import getopt
 import argparse
 import logging
 import time
 
 class RecordData:
-    def __init__(self, _pth = None, record_camera = True, fps_value = 30, isColor = False):
+    def __init__(self, _pth = None, record_camera = True, fps_value = 30, isColor = False, default_res = False):
 
-        self.device_list = get_camera_list()
-        # print(self.device_list)
-        self.cam_device = self.device_list.index("Lenovo FHD Webcam")
+        # self.camera_objects = QMediaDevices.videoInputs()
+        # self.device_list = [x.description() for x in self.camera_objects]
+        # # print(self.device_list)
+        # self.cam_device = self.device_list.index("Lenovo FHD Webcam")
+        self.cam_device = 2
 
-        """webcam parameters for recording"""
-        self.yResRs = 640
-        self.xResRs = 640
+        if not default_res:
+            """webcam parameters for recording"""
+            self.yResRs = 640
+            self.xResRs = 640
 
-        self.xPos = 320 # fixed parameters
-        self.yPos = 40
+            self.xPos = 320 # fixed parameters
+            self.yPos = 40
+        else:
+            self.yResRs = 720
+            self.xResRs = 1280
+            self.xPos = 0 # fixed parameters
+            self.yPos = 0
+            
         self.record_camera = record_camera
         self.start_recording = False
         self._pth = _pth
@@ -172,7 +180,7 @@ if __name__ == "__main__":
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None # this is default do not change, path gets updated by your input
-        _folder_name = "cam_may_25_5_2023" # this is the parent folder name where the data will be saved
+        _folder_name = "cam_june_22_2023" # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")
@@ -200,5 +208,5 @@ if __name__ == "__main__":
             os.makedirs(_pth)
     time.sleep(1)
 
-    record_data = RecordData(_pth=_pth, record_camera=record_camera, isColor=True)
+    record_data = RecordData(_pth=_pth, record_camera=record_camera, isColor=True, default_res=True)
     record_data.run(cart_sensors=record_sensors)
