@@ -8,6 +8,7 @@ import msgpack
 import msgpack_numpy as mpn
 from scipy.interpolate import interp1d
 from more_itertools import locate
+import polars as pl
 
 def read_df_csv(filename, offset=2):
     """
@@ -133,6 +134,12 @@ def interpolate_target_df(target_df, reference_df, col_names = None):
 
     both dataframes should have a column named "time"
     """
+
+    if type(target_df) is not pd.DataFrame:
+        target_df = target_df.to_pandas()
+
+    if type(reference_df) is not pd.DataFrame:
+        reference_df = reference_df.to_pandas()
 
     target_df = target_df.reset_index(drop=True)
     reference_df = reference_df.reset_index(drop=True)
