@@ -1,5 +1,5 @@
 import numpy as np
-from numba import njit
+# from numba import njit
 
 def calculate_rotmat(xdir, zdir, org):
     """
@@ -18,7 +18,7 @@ def calculate_rotmat(xdir, zdir, org):
     return rotMat
 
 
-@njit
+# @njit
 def calculate_rotmat_from_xyo(xdir, ydir, org):
     """
     this function calculates rotation matrix
