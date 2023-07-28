@@ -105,7 +105,7 @@ def add_datetime_diff(df, _time, _sync, _diff_name, truncate = False):
                 _count = count
                 print(_count)
                 break
-        if _count is not 0:   
+        if _count != 0:   
             df = df.loc[:_count].copy()     # dropping unnecessary rows
     
     return df
