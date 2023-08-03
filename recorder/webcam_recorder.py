@@ -26,7 +26,7 @@ class RecordData:
         # self.device_list = [x.description() for x in self.camera_objects]
         # # print(self.device_list)
         # self.cam_device = self.device_list.index("Lenovo FHD Webcam")
-        self.cam_device = 2
+        self.cam_device = 1
 
         if not default_res:
             """webcam parameters for recording"""
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None # this is default do not change, path gets updated by your input
-        _folder_name = "cam_june_22_2023" # this is the parent folder name where the data will be saved
+        _folder_name = "data_for_labelling_aug_1_2023" # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")
