@@ -13,7 +13,7 @@ import multiprocessing
 from threading import Thread
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from sensors import SerialPort
-from PyQt6.QtMultimedia import * #to get available dameras
+# from PyQt6.QtMultimedia import * #to get available dameras
 import getopt
 import argparse
 import logging
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None # this is default do not change, path gets updated by your input
-        _folder_name = "data_for_labelling_aug_1_2023" # this is the parent folder name where the data will be saved
+        _folder_name = "validation" # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")
