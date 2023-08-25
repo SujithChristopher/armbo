@@ -63,8 +63,6 @@ class SerialPort(object):
 
     def serial_read(self):
         """returns bool for valid read, also returns the data read"""
-        # print(self.ser_port.read())
-
 
         if (self.ser_port.read() == b'\xff') and (self.ser_port.read() == b'\xff'):
             self.connected = True
@@ -127,10 +125,10 @@ if __name__ == '__main__':
 
     # print(opts[0])
     # _filepath = opts[0][1]
-    _filepath = r"C:\Users\CMC\Documents\openposelibs\pose\skateboard_gui\recording_programs\test_data\test"
+    _filepath = r"D:\CMC\DeepVision\recorded_data\validation\test"
 
     # myport = SerialPort("COM15", 115200, csv_path=_filepath, csv_enable=True)
-    myport = SerialPort("COM5", 115200, csv_path=_filepath, csv_enable=True, dof=9)
+    myport = SerialPort("COM6", 115200, csv_path=_filepath, csv_enable=True, dof=9)
     # myport = SerialPort("COM4", 115200, csv_path="random", csv_enable=False)
     # myport = SerialPort("COM4", 115200)
     myport.run_program()
