@@ -26,7 +26,7 @@ class RecordData:
         # self.device_list = [x.description() for x in self.camera_objects]
         # # print(self.device_list)
         # self.cam_device = self.device_list.index("Lenovo FHD Webcam")
-        self.cam_device = 1
+        self.cam_device = 2
 
         if not default_res:
             """webcam parameters for recording"""
@@ -133,13 +133,13 @@ class RecordData:
             
         if cart_sensors and not self.record_camera:
 
-            myport = SerialPort("COM5", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
+            myport = SerialPort("COM10", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
 
-            myport = SerialPort("COM5", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
+            myport = SerialPort("COM10", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
             
@@ -173,8 +173,8 @@ if __name__ == "__main__":
         print("No arguments passed, please enter manually")
 
         """Enter the respective parameters"""
-        record_camera = True
-        record_sensors = False
+        record_camera = False
+        record_sensors = True
 
         if record_camera or record_sensors:
             _name = input("Enter the name of the recording: ")
