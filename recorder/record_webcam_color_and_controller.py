@@ -24,11 +24,6 @@ class RecordData:
         # self.cam_device = self.device_list.index("e2eSoft iVCam")
 
         """webcam parameters for recording"""
-        self.yResRs = 670
-        self.xResRs = 750
-
-        self.xPos = 274 # fixed parameters
-        self.yPos = 112
         self.record_camera = record_camera
         self.start_recording = False
         self._pth = _pth
@@ -40,7 +35,7 @@ class RecordData:
         """capture webcam"""
 
         #list available webcam
-        cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         cap.set(cv2.CAP_PROP_FPS, self.fps_val)
@@ -112,13 +107,13 @@ class RecordData:
             
         if cart_sensors and not self.record_camera:
 
-            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
+            myport = SerialPort("COM6", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
 
-            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
+            myport = SerialPort("COM6", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
             
@@ -153,13 +148,13 @@ if __name__ == "__main__":
 
         """Enter the respective parameters"""
         record_camera = True
-        record_sensors = False
+        record_sensors = True
 
         if record_camera or record_sensors:
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None # this is default do not change, path gets updated by your input
-        _folder_name = "data_for_labelling_aug_1_2023" # this is the parent folder name where the data will be saved
+        _folder_name = "validation" # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")
