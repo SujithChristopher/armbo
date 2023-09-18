@@ -1,2 +1,3 @@
 [data_path]
-directory = 'F:\ArmBo_recorded_data\recorded_data'
+# directory = 'F:\ArmBo_recorded_data\recorded_data'
+directory = 'D:\CMC\DeepVision\recorded_data'

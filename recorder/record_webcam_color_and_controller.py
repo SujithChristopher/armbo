@@ -147,7 +147,7 @@ if __name__ == "__main__":
         print("No arguments passed, please enter manually")
 
         """Enter the respective parameters"""
-        record_camera = True
+        record_camera = False
         record_sensors = True
 
         if record_camera or record_sensors:

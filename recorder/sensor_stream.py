@@ -25,7 +25,7 @@ class SerialPort(object):
         self.payload = bytearray()
 
         self.serialport = serialport
-        self.ser_port = serial.Serial(serialport, serialrate)
+        self.ser_port = serial.Serial(serialport, serialrate, timeout=0.5)
         self.dof = dof
 
         self.csv_enabled = csv_enable
@@ -86,7 +86,7 @@ class SerialPort(object):
         stdout.write("disconnected\n")
 
     def run_program(self):
-        while True:
+        while self.ser_port.is_open:
             if self.serial_read():
                 val = struct.unpack("4l", self.payload[:16])    # encoder values
                 _rtc = struct.unpack("Q", self.payload[16:24])    # rtc values time delta
@@ -120,6 +120,12 @@ class SerialPort(object):
             if keyboard.is_pressed("q"):
                 print("closing")
                 break
+            if not self.ser_port.is_open:
+                
+                print("port closed")
+                break
+            
+        print("program ended")
 
 
 if __name__ == '__main__':
