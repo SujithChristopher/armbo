@@ -17,6 +17,10 @@ import argparse
 import logging
 import time
 
+from deep_vision import rs_time
+
+
+
 class RecordData:
     def __init__(self, _pth = None, record_camera = True, fps_value = 30):
 
@@ -56,8 +60,10 @@ class RecordData:
                 if self.record_camera and self.start_recording:
                     _packed_file = mp.packb(gray_image, default=mpn.encode)
                     _save_file.write(_packed_file)
-                    _time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-                    _packed_timestamp = mp.packb(_time_stamp)
+                    # _time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                    # print(_time_stamp)
+                    _time_stamp = rs_time()
+                    _packed_timestamp = mp.packb(_time_stamp, default=mpn.encode)
                     _timestamp_file.write(_packed_timestamp)
 
                 # fpstimer.FPSTimer(self.fps_val)
@@ -147,7 +153,7 @@ if __name__ == "__main__":
         print("No arguments passed, please enter manually")
 
         """Enter the respective parameters"""
-        record_camera = False
+        record_camera = True
         record_sensors = True
 
         if record_camera or record_sensors:
