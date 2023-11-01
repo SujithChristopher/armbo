@@ -26,7 +26,7 @@ class RecordData:
         # self.device_list = [x.description() for x in self.camera_objects]
         # # print(self.device_list)
         # self.cam_device = self.device_list.index("Lenovo FHD Webcam")
-        self.cam_device = 2
+        self.cam_device = 1
 
         if not default_res:
             """webcam parameters for recording"""
@@ -173,7 +173,7 @@ if __name__ == "__main__":
         print("No arguments passed, please enter manually")
 
         """Enter the respective parameters"""
-        record_camera = False
+        record_camera = True
         record_sensors = True
 
         if record_camera or record_sensors:

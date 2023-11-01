@@ -63,7 +63,8 @@ class RecordData:
                     # _time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                     # print(_time_stamp)
                     _time_stamp = rs_time()
-                    _packed_timestamp = mp.packb(_time_stamp, default=mpn.encode)
+                    _packed_timestamp = mp.packb([_time_stamp, 'c'], default=mpn.encode)
+                    print(_packed_timestamp)
                     _timestamp_file.write(_packed_timestamp)
 
                 # fpstimer.FPSTimer(self.fps_val)
@@ -113,13 +114,13 @@ class RecordData:
             
         if cart_sensors and not self.record_camera:
 
-            myport = SerialPort("COM6", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
+            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
 
-            myport = SerialPort("COM6", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
+            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
             
