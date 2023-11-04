@@ -133,13 +133,13 @@ class RecordData:
             
         if cart_sensors and not self.record_camera:
 
-            myport = SerialPort("COM10", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
+            myport = SerialPort("COM7", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
 
-            myport = SerialPort("COM10", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
+            myport = SerialPort("COM7", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
             

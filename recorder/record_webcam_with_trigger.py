@@ -133,13 +133,13 @@ class RecordData:
             
         if cart_sensors and not self.record_camera:
 
-            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
+            myport = SerialPort("COM7", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True, dof=9)
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
 
-            myport = SerialPort("COM4", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
+            myport = SerialPort("COM7", 115200, csv_path=self._pth, csv_enable=True, single_file_protocol=True)
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
             
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 
         """Enter the respective parameters"""
         record_camera = True
-        record_sensors = False
+        record_sensors = True
 
         if record_camera or record_sensors:
             _name = input("Enter the name of the recording: ")
