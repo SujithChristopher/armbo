@@ -186,3 +186,5 @@ recorded_data/*
 frameworks/*
 training_notebooks/runs/*
 training_logs/*
+
+.idea
