@@ -1,4 +1,6 @@
 import numpy as np
+
+
 # from numba import njit
 
 def calculate_rotmat(xdir, zdir, org):
@@ -28,7 +30,7 @@ def calculate_rotmat_from_xyo(xdir, ydir, org):
 
     vxnorm = v1 / np.linalg.norm(v1)
 
-    vycap = v2 - np.dot(vxnorm.T , v2) * vxnorm
+    vycap = v2 - np.dot(vxnorm.T, v2) * vxnorm
     vynorm = vycap / np.linalg.norm(vycap)
 
     vznorm = np.cross(vynorm.T[0], vxnorm.T[0]).reshape(3, 1)

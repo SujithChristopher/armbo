@@ -1,14 +1,13 @@
 """this code is written by Sujith"""
 
-import enum
-import pandas as pd
 from datetime import datetime, timedelta
-import numpy as np
+
 import msgpack
-import msgpack_numpy as mpn
-from scipy.interpolate import interp1d
+import numpy as np
+import pandas as pd
 from more_itertools import locate
-import polars as pl
+from scipy.interpolate import interp1d
+
 
 def read_df_csv(filename, offset=2):
     """
@@ -24,7 +23,7 @@ def read_df_csv(filename, offset=2):
 
     pth = filename
     raw = pd.read_csv(pth)
-    cols_list = raw.columns     # first row which contains capture start time
+    cols_list = raw.columns  # first row which contains capture start time
     inx = [i for i, x in enumerate(cols_list) if x == "Capture Start Time"]
     st_time = cols_list[inx[0] + 1]
     st_time = datetime.strptime(st_time, "%Y-%m-%d %I.%M.%S.%f %p")  # returns datetime object
@@ -42,7 +41,7 @@ def read_df_csv(filename, offset=2):
     for id, i in enumerate(col_names):
         if not i.islower():
             col_names[id] = i.lower()
-    
+
     for i in col_names:
         df_headers.append(i + "_x")
         df_headers.append(i + "_y")
@@ -55,7 +54,6 @@ def read_df_csv(filename, offset=2):
 
 
 def add_datetime_col(df, _time, _name):
-
     """
     df:     dataframe
     _time:  the time you want to start your column with
@@ -64,12 +62,12 @@ def add_datetime_col(df, _time, _name):
 
     _t = []
     for i in list(df[_name]):
-        _t.append(_time + timedelta(0,float(i)))
+        _t.append(_time + timedelta(0, float(i)))
     df["time"] = _t
     return df
-    
-def add_datetime_diff(df, _time, _sync, _diff_name, truncate = False):
 
+
+def add_datetime_diff(df, _time, _sync, _diff_name, truncate=False):
     """
     df:         dataframe
     _time:      the time you want to start your column with
@@ -85,7 +83,7 @@ def add_datetime_diff(df, _time, _sync, _diff_name, truncate = False):
             _inx = inx
             break
 
-    df = df.loc[_inx:].copy()     # dropping unnecessary rows
+    df = df.loc[_inx:].copy()  # dropping unnecessary rows
 
     _diff = list(df[_diff_name].diff())
     _sum = 0
@@ -94,7 +92,7 @@ def add_datetime_diff(df, _time, _sync, _diff_name, truncate = False):
         if np.isnan(i):
             i = 0
         _sum = _sum + i
-        _t.append(_time + timedelta(0,float(_sum/1000)))
+        _t.append(_time + timedelta(0, float(_sum / 1000)))
 
     df["time"] = _t
 
@@ -105,10 +103,11 @@ def add_datetime_diff(df, _time, _sync, _diff_name, truncate = False):
                 _count = count
                 print(_count)
                 break
-        if _count != 0:   
-            df = df.loc[:_count].copy()     # dropping unnecessary rows
-    
+        if _count != 0:
+            df = df.loc[:_count].copy()  # dropping unnecessary rows
+
     return df
+
 
 def add_time_from_file(df, _pth):
     """
@@ -124,7 +123,8 @@ def add_time_from_file(df, _pth):
     df["time"] = pd.to_datetime(df["time"])
     return df
 
-def interpolate_target_df(target_df, reference_df, col_names = None):
+
+def interpolate_target_df(target_df, reference_df, col_names=None):
     # based on mocap time using interp1d function
     # for x, y, z coordinates and yaw, pitch, roll
     """
@@ -146,15 +146,17 @@ def interpolate_target_df(target_df, reference_df, col_names = None):
 
     # column names 
     if col_names is None:
-        col_names = ["frame_id","x", "y", "z", "yaw", "pitch", "roll"]
+        col_names = ["frame_id", "x", "y", "z", "yaw", "pitch", "roll"]
 
     df = pd.DataFrame(columns=col_names)
     df["time"] = reference_df.time
 
     # change reference time to float
-    reference_df["time"] = reference_df["time"].dt.hour * 3600 + reference_df["time"].dt.minute * 60 + reference_df["time"].dt.second + reference_df["time"].dt.microsecond / 1000000
+    reference_df["time"] = reference_df["time"].dt.hour * 3600 + reference_df["time"].dt.minute * 60 + reference_df[
+        "time"].dt.second + reference_df["time"].dt.microsecond / 1000000
     # change target time to float
-    target_df["time"] = target_df["time"].dt.hour * 3600 + target_df["time"].dt.minute * 60 + target_df["time"].dt.second + target_df["time"].dt.microsecond / 1000000
+    target_df["time"] = target_df["time"].dt.hour * 3600 + target_df["time"].dt.minute * 60 + target_df[
+        "time"].dt.second + target_df["time"].dt.microsecond / 1000000
 
     new_cols = []
     for i in col_names:
@@ -166,11 +168,11 @@ def interpolate_target_df(target_df, reference_df, col_names = None):
 
     for idx, i in enumerate(col_names):
         df[i] = new_cols[idx]
-    
-    
+
     return df
 
-def trunkate_dfs(df_1, df_2, display_print = False):
+
+def trunkate_dfs(df_1, df_2, display_print=False):
     # which starts earlier
     """
     df_1: dataframe 1
@@ -214,6 +216,7 @@ def trunkate_dfs(df_1, df_2, display_print = False):
 
     return df_1, df_2
 
+
 def read_rigid_body_csv(_pth):
     """
     _pth: path to the rigid body file
@@ -222,7 +225,7 @@ def read_rigid_body_csv(_pth):
 
     # get the start time of the capture
     raw_df = pd.read_csv(_pth, dtype=str)
-    cols_list = raw_df.columns     # first row which contains capture start time
+    cols_list = raw_df.columns  # first row which contains capture start time
     inx = [i for i, x in enumerate(cols_list) if x == "Capture Start Time"]
     st_time = cols_list[inx[0] + 1]
     st_time = datetime.strptime(st_time, "%Y-%m-%d %I.%M.%S.%f %p")  # returns datetime object
@@ -257,11 +260,9 @@ def read_rigid_body_csv(_pth):
     [_rb_pos_idx.remove(i) for i in _rotation_ids]
 
     # create column names for angle
-    col_names = []
+    col_names = ["frame", "seconds"]
 
     # first two columns
-    col_names.append("frame")
-    col_names.append("seconds")
 
     for i in _rotation_ids:
         _col = _rb_df[i].iloc[3].lower()
@@ -275,7 +276,6 @@ def read_rigid_body_csv(_pth):
         else:
             col_names.append("rb_pos_err")
 
-
     # rigid body individual marker section
 
     for i in _rb_marker_idx:
@@ -284,15 +284,14 @@ def read_rigid_body_csv(_pth):
             _col_head = _col_head.split(":")[1].strip()
             _col_head = _col_head.replace("marker", "")
             _m_idx = int(_col_head)
-            
+
             if isinstance(_rb_df[i].iloc[3], str):
                 _col = _rb_df[i].iloc[3].lower()
                 col_names.append("rb_marker_m" + str(_col_head) + "_" + _col)
             else:
-                col_names.append("rb_marker_m" + str(_col_head) + "_mq") # marker quality
+                col_names.append("rb_marker_m" + str(_col_head) + "_mq")  # marker quality
 
-
-    # individual marker section 
+    # individual marker section
 
     for i in _marker_idx:
         if isinstance(_rb_df[i].iloc[0], str):
@@ -300,7 +299,7 @@ def read_rigid_body_csv(_pth):
             _col_head = _col_head.split(":")[1].strip()
             _col_head = _col_head.replace("marker", "")
             _m_idx = int(_col_head)
-            
+
             if isinstance(_rb_df[i].iloc[3], str):
                 _col = _rb_df[i].iloc[3].lower()
                 col_names.append("m" + str(_col_head) + "_" + _col)
@@ -308,10 +307,9 @@ def read_rigid_body_csv(_pth):
     _rb_df = _rb_df[4:]
     _rb_df.columns = col_names
 
-    #reset index
+    # reset index
     _rb_df = _rb_df.reset_index(drop=True)
     _rb_df = _rb_df.apply(pd.to_numeric, errors='ignore')
-
 
     return _rb_df, st_time
 
@@ -324,11 +322,12 @@ def get_marker_name(val):
     using the given integer value    
     """
     # create using dictionary
-    _val = {"x":"m" + str(val) + "_x",
-            "y":"m" + str(val) + "_y",
-            "z":"m" + str(val) + "_z",}
+    _val = {"x": "m" + str(val) + "_x",
+            "y": "m" + str(val) + "_y",
+            "z": "m" + str(val) + "_z", }
 
     return _val
+
 
 def get_rb_marker_name(val):
     # int value to marker name
@@ -338,8 +337,8 @@ def get_rb_marker_name(val):
     using the given integer value    
     """
     # create using dictionary
-    _val = {"x":"rb_marker_m" + str(val) + "_x",
-            "y":"rb_marker_m" + str(val) + "_y",
-            "z":"rb_marker_m" + str(val) + "_z",}
+    _val = {"x": "rb_marker_m" + str(val) + "_x",
+            "y": "rb_marker_m" + str(val) + "_y",
+            "z": "rb_marker_m" + str(val) + "_z", }
 
     return _val
