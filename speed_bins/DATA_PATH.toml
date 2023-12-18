@@ -13,5 +13,5 @@ directory = 'D:\CMC\DeepVision\recorded_data'
 
 [parameters]
 
-enc1 = 'int8'
+torque1 = 'int8'
 enc2 = 'long'
