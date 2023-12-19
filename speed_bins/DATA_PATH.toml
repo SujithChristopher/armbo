@@ -13,5 +13,11 @@ directory = 'D:\CMC\DeepVision\recorded_data'
 
 [parameters]
 
-torque1 = 'int8'
-enc2 = 'long'
+t = 'float'
+f1 = 'float'
+f2 = 'float'
+f3 = 'float'
+f4 = 'float'
+cop_x = 'float'
+cop_y = 'float'
+weight = 'float'

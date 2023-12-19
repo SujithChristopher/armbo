@@ -1,0 +1,8 @@
+[raw_dataset]
+pth = 'F:\\aruco_recent_recordings\\data_for_labelling_aug_1_2023'
+
+[training_dataset]
+pth = 'E:\\toTrain'
+
+[analysis]
+pth = 'F:\\aruco_recent_recordings\\data_for_labelling_aug_1_2023'
