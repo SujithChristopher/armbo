@@ -7,6 +7,8 @@ Stroke can often lead to motor function impairment including arm and hand. Arm s
 
 ![Alt text](src/gamescreen.png)
 
-This work is a part of my MS Thesis, guided by Dr Sivakumar Balasubramanian, HOD of Bioegineering department and BioRehabGroup https://biorehab.github.io/
+This work is a part of my MS Thesis, guided by Dr Sivakumar Balasubramanian, HOD of Bioengineering Department and BioRehabGroup https://biorehab.github.io/
 
-![Alt text](src/logo.png)
+
+<img src="src/logo.png" alt="drawing" width="200"/>
+<!-- ![Alt text](src/logo.png) -->
