@@ -1,4 +1,4 @@
-# DeepVision
+# ArmBo
 
 Instrumented arm skateboard (ArmBo)
 
