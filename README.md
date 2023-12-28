@@ -10,7 +10,7 @@ Stroke can often lead to motor function impairment including arm and hand. Arm s
 This work is a part of my MS Thesis, guided by Dr Sivakumar Balasubramanian, HOD of Bioengineering Department and BioRehabGroup https://biorehab.github.io/
 
 
-<img src="src/logo.png" alt="drawing" width="200"/>
-<!-- ![Alt text](src/logo.png) -->
+<!-- <img src="src/logo.png" alt="drawing" width="200"/>
+![Alt text](src/logo.png) -->
 
 How to use? ..coming soon.
