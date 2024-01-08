@@ -1,5 +1,5 @@
 [data_path]
-directory = 'D:\CMC\DeepVision\recorded_data'
+directory = 'D:\CMC\pyprojects\DeepVision\recorded_data'
 
 
 ## Available data types below

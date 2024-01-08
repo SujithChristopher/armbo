@@ -8,7 +8,6 @@ import datetime
 import keyboard
 import msgpack as mp
 import msgpack_numpy as mpn
-import fpstimer
 import multiprocessing
 from threading import Thread
 from sensor_stream import SerialPort
