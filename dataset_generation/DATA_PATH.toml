@@ -1,0 +1,23 @@
+[data_path]
+directory = 'D:\CMC\pyprojects\DeepVision\recorded_data'
+
+
+## Available data types below
+# int8
+# int16
+# int32
+# int64
+# long
+# float32
+# float64
+
+[parameters]
+
+t = 'float'
+f1 = 'float'
+f2 = 'float'
+f3 = 'float'
+f4 = 'float'
+cop_x = 'float'
+cop_y = 'float'
+weight = 'float'
