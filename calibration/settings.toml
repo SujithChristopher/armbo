@@ -1,0 +1,28 @@
+[calibration]
+camera_matrix = [ [ 1153.9625872369572, 0.0, 401.9677868402952,], [ 0.0, 1402.629747011576, 581.3525741767958,], [ 0.0, 0.0, 1.0,],]
+dist_coeffs = [ [ 0.30391396924704106, 0.2925814166866844, 0.02816399668232419, -0.13228184933952175, -0.1933481117626298,],]
+
+[pose]
+human_pose = false
+marker_pose = true
+
+[aruco]
+marker_length = 0.05
+marker_spacing = 0.01
+
+[model]
+YOLOv8 = "./models/mip_ar_200e_noise.pt"
+
+[cad_model]
+cad = "./models/3D_models.stl"
+
+[camera]
+resolution = [ 720, 1280,]
+
+[stream_data]
+udp = false
+ip = "localhost"
+port = 12345
+
+[display]
+display = false

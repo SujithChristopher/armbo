@@ -86,18 +86,19 @@ class SerialPort(object):
     def run_program(self):
         while True:
             if self.serial_read():
-                val = struct.unpack("4l", self.payload[:16])    # encoder values
-                _rtc = struct.unpack("Q", self.payload[16:24])    # rtc values time delta
-                mils = struct.unpack("L", self.payload[24:28])
-                _sync = struct.unpack("c", self.payload[28:29])[0].decode("utf-8")
-                _imu_data = struct.unpack("6f", self.payload[29:53])
-                if len(self.payload) > 53:
-                    _magnetometer = struct.unpack("3f", self.payload[53:65])
+                # val = struct.unpack("4l", self.payload[:16])    # encoder values
+                # _rtc = struct.unpack("Q", self.payload[16:24])    # rtc values time delta
+                # mils = struct.unpack("L", self.payload[24:28])
+                _sync = struct.unpack("c", self.payload)[0].decode("utf-8")
+                print(_sync)
+                # _imu_data = struct.unpack("6f", self.payload[29:53])
+                # if len(self.payload) > 53:
+                #     _magnetometer = struct.unpack("3f", self.payload[53:65])
 
-                sys.stdout.write("\r" + _sync)
-                sys.stdout.flush()
+                # sys.stdout.write("\r" + _sync)
+                # sys.stdout.flush()
 
-                _rtcval = datetime.fromtimestamp(_rtc[0]).strftime("%Y-%m-%d %I.%M.%S.%f %p")
+                # _rtcval = datetime.fromtimestamp(_rtc[0]).strftime("%Y-%m-%d %I.%M.%S.%f %p")
 
                 # # time_delta = struct.unpack("3H", self.payload[24:30])
                 rs = rs_time()
@@ -128,7 +129,7 @@ if __name__ == '__main__':
     _filepath = r"D:\CMC\DeepVision\recorded_data\validation\test"
 
     # myport = SerialPort("COM15", 115200, csv_path=_filepath, csv_enable=True)
-    myport = SerialPort("COM6", 115200, csv_path=_filepath, csv_enable=True, dof=9)
+    myport = SerialPort("COM3", 115200, csv_path=_filepath, csv_enable=False, dof=9)
     # myport = SerialPort("COM4", 115200, csv_path="random", csv_enable=False)
     # myport = SerialPort("COM4", 115200)
     myport.run_program()
