@@ -1,7 +1,8 @@
 import numpy as np
 from scipy import integrate
 
-def set_zero(df, column_name = ["e_t", "e_rr", "e_rl"]):
+
+def set_zero(df, column_name=["e_t", "e_rr", "e_rl"]):
     """
     Set the value of the column to 0
     """
@@ -11,28 +12,29 @@ def set_zero(df, column_name = ["e_t", "e_rr", "e_rl"]):
         df[i] = df[i] - df[i][0]
 
     return df
-    
 
-def get_angular_velocity(df, column_name = ["e_t", "e_rr", "e_rl"], ang_per_increment = 0.09, del_t = 0.01):
+
+def get_angular_velocity(
+    df, column_name=["e_t", "e_rr", "e_rl"], ang_per_increment=0.09, del_t=0.01
+):
     """
     Calculate the angular velocity of the robot
     """
 
     # Calculate the angular velocity
     for name in column_name:
-        df[name + "_av"] = (df[name] * ang_per_increment).diff()/ del_t
-        df[name + "_av"] = df[name + "_av"]* np.pi/180
+        df[name + "_av"] = (df[name] * ang_per_increment).diff() / del_t
+        df[name + "_av"] = df[name + "_av"] * np.pi / 180
     df = df.fillna(0)
 
     _ang_column = []
     for i in column_name:
         _ang_column.append(i + "_av")
-    
+
     return df, _ang_column
 
 
-def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1):
-
+def get_directional_velocity(df, column_name, radius=1, x=1, y=1):
     """
     Calculate the directional velocity of the robot
     """
@@ -51,7 +53,6 @@ def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1):
     ly = 122.5/2
     """
 
-
     # mat = np.array([[-y, 1, 0], [-x, 0, -1], [x, 0, -1]])
     mat = np.array([[-y, 1, 0], [-x, 0, -1], [x, 0, -1]])
     pmat = np.linalg.pinv(mat)
@@ -60,7 +61,13 @@ def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1):
     _w = []
 
     for i in range(len(df)):
-        val = np.array([df[column_name[0]].iloc[i], df[column_name[1]].iloc[i], df[column_name[2]].iloc[i]]).reshape(3,1)
+        val = np.array(
+            [
+                df[column_name[0]].iloc[i],
+                df[column_name[1]].iloc[i],
+                df[column_name[2]].iloc[i],
+            ]
+        ).reshape(3, 1)
         res = np.dot(pmat, val) * radius
         _w.append(res[0][0])
         _vx.append(res[1][0])
@@ -71,6 +78,7 @@ def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1):
 
     return df, df.columns
 
+
 def get_position(df):
     """
     Calculate the position of the robot
@@ -78,17 +86,16 @@ def get_position(df):
     df should have "vx", "vy", "w" columns to calculate the position
     """
 
-    _xval = df["vx"].cumsum()*0.01*0.5
-    _yval = df["vy"].cumsum()*0.01*0.5
+    _xval = df["vx"].cumsum() * 0.01 * 0.5
+    _yval = df["vy"].cumsum() * 0.01 * 0.5
 
     df["x_val"] = _xval
     df["y_val"] = _yval
-    
+
     return df, ["x_val", "y_val"]
 
 
-def get_orientation(df, column_name = "w"):
-
+def get_orientation(df, column_name="w"):
     """
     Calculate the angle of the chasis, with respect to initial frame
 
@@ -97,15 +104,15 @@ def get_orientation(df, column_name = "w"):
 
     if not column_name:
         column_name = "w"
-    
-    _angle = df[column_name].cumsum()*0.01
+
+    _angle = df[column_name].cumsum() * 0.01
 
     df["theta"] = _angle
 
     return df, ["theta"]
 
-def get_orientation_dt(df, column_name = "w", dt = []):
 
+def get_orientation_dt(df, column_name="w", dt=[]):
     """
     Calculate the angle of the chasis, with respect to initial frame
 
@@ -114,7 +121,7 @@ def get_orientation_dt(df, column_name = "w", dt = []):
 
     if not column_name:
         column_name = "w"
-    
+
     _angle = integrate.cumtrapz(df[column_name], dt, initial=0)
 
     return df, ["theta"]

@@ -16,7 +16,7 @@ from fpdf import FPDF
 
 def read_pickle_file(fname):
     data = []
-    with (open(fname, "rb")) as openfile:
+    with open(fname, "rb") as openfile:
         while True:
             try:
                 data.append(pickle.load(openfile))
@@ -25,7 +25,16 @@ def read_pickle_file(fname):
     return data
 
 
-def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█', printEnd="\r"):
+def printProgressBar(
+    iteration,
+    total,
+    prefix="",
+    suffix="",
+    decimals=1,
+    length=100,
+    fill="█",
+    printEnd="\r",
+):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -40,8 +49,8 @@ def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=
     """
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=printEnd)
+    bar = fill * filledLength + "-" * (length - filledLength)
+    print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=printEnd)
     # Print New Line on Complete
     if iteration == total:
         print()
@@ -61,69 +70,126 @@ def read_colour_frames(fname):
 
 
 class Params:
-    root = 'C:\\Users\\CMC\\Documents\\LVS\\data'
-    outdir = 'outdir'
-    diag = 'diagdata'
-    body = 'bodydata'
-    otdata = '_mocap'
+    root = "C:\\Users\\CMC\\Documents\\LVS\\data"
+    outdir = "outdir"
+    diag = "diagdata"
+    body = "bodydata"
+    otdata = "_mocap"
 
-    PoseJoints = ("HEAD", "NECK", "RSHD", "RELB", "RWRT",
-                  "LSHD", "LELB", "LWRT", "RHIP", "RKNE",
-                  "RANK", "LHIP", "LKNE", "LANK",
-                  "REYE", "REAR", "LEYE", "LEAR")
+    PoseJoints = (
+        "HEAD",
+        "NECK",
+        "RSHD",
+        "RELB",
+        "RWRT",
+        "LSHD",
+        "LELB",
+        "LWRT",
+        "RHIP",
+        "RKNE",
+        "RANK",
+        "LHIP",
+        "LKNE",
+        "LANK",
+        "REYE",
+        "REAR",
+        "LEYE",
+        "LEAR",
+    )
     ExtraPoseJoints = ("TRNK",)
     MaxHumans = 1
-    PerfHeader = ("subj", "date", "time", "session", "rwrst5_x", "rwrst5_y",
-                  "rwrst5_z", "rwrst50_x", "rwrst50_y",
-                  "rwrst50_z", "rwrst95_x", "rwrst95_y",
-                  "rwrst95_z", "lwrst5_x", "lwrst5_y",
-                  "lwrst5_z", "lwrst50_x", "lwrst50_y",
-                  "lwrst50_z", "lwrst95_x", "lwrst95_y",
-                  "lwrst95_z", "trnkx5", "trnky5",
-                  "trnkz5", "rsfe5", "lsfe5", "rsaa5",
-                  "lsaa5", "refe5", "lefe5")
+    PerfHeader = (
+        "subj",
+        "date",
+        "time",
+        "session",
+        "rwrst5_x",
+        "rwrst5_y",
+        "rwrst5_z",
+        "rwrst50_x",
+        "rwrst50_y",
+        "rwrst50_z",
+        "rwrst95_x",
+        "rwrst95_y",
+        "rwrst95_z",
+        "lwrst5_x",
+        "lwrst5_y",
+        "lwrst5_z",
+        "lwrst50_x",
+        "lwrst50_y",
+        "lwrst50_z",
+        "lwrst95_x",
+        "lwrst95_y",
+        "lwrst95_z",
+        "trnkx5",
+        "trnky5",
+        "trnkz5",
+        "rsfe5",
+        "lsfe5",
+        "rsaa5",
+        "lsaa5",
+        "refe5",
+        "lefe5",
+    )
 
     @staticmethod
     def get_pose_header_for_col():
         # Genrate header for pose in color space.
-        _head = [f"{_pj}_{_v}_{_nh}"
-                 for _nh in range(Params.MaxHumans)
-                 for _pj in Params.PoseJoints
-                 for _v in ("x", "y", "s")]
-        _head = _head + [f"{_pj}_{_v}_{_nh}"
-                         for _nh in range(Params.MaxHumans)
-                         for _pj in Params.ExtraPoseJoints
-                         for _v in ("x", "y", "s")]
+        _head = [
+            f"{_pj}_{_v}_{_nh}"
+            for _nh in range(Params.MaxHumans)
+            for _pj in Params.PoseJoints
+            for _v in ("x", "y", "s")
+        ]
+        _head = _head + [
+            f"{_pj}_{_v}_{_nh}"
+            for _nh in range(Params.MaxHumans)
+            for _pj in Params.ExtraPoseJoints
+            for _v in ("x", "y", "s")
+        ]
         return _head
 
     @staticmethod
     def get_pose_header_for_dep():
         # Genrate header for pose in depth space.
-        _head = [f"{_pj}_{_v}_{_nh}"
-                 for _nh in range(Params.MaxHumans)
-                 for _pj in Params.PoseJoints
-                 for _v in ("x", "y", "s")]
-        _head = _head + [f"{_pj}_{_v}_{_nh}"
-                         for _nh in range(Params.MaxHumans)
-                         for _pj in Params.ExtraPoseJoints
-                         for _v in ("x", "y", "s")]
+        _head = [
+            f"{_pj}_{_v}_{_nh}"
+            for _nh in range(Params.MaxHumans)
+            for _pj in Params.PoseJoints
+            for _v in ("x", "y", "s")
+        ]
+        _head = _head + [
+            f"{_pj}_{_v}_{_nh}"
+            for _nh in range(Params.MaxHumans)
+            for _pj in Params.ExtraPoseJoints
+            for _v in ("x", "y", "s")
+        ]
         return _head
 
     @staticmethod
     def get_pose_header_for_cam():
         # Genrate header for pose camera space.
-        return [f"{_pj}_{_v}_{_nh}"
-                for _nh in range(Params.MaxHumans)
-                for _pj in Params.PoseJoints
-                for _v in ("x", "y", "z", "s")]
+        return [
+            f"{_pj}_{_v}_{_nh}"
+            for _nh in range(Params.MaxHumans)
+            for _pj in Params.PoseJoints
+            for _v in ("x", "y", "z", "s")
+        ]
 
     @staticmethod
     def get_joint_angles_header():
-        joints = ("TRUNK_X", "TRUNK_Y", "TRUNK_Z", "RSHD_FE", "RSHD_AA",
-                  "RELB_FE", "LSHD_FE", "LSHD_AA", "LELB_FE")
-        return [f"{_pj}_{_nh}"
-                for _nh in range(Params.MaxHumans)
-                for _pj in joints]
+        joints = (
+            "TRUNK_X",
+            "TRUNK_Y",
+            "TRUNK_Z",
+            "RSHD_FE",
+            "RSHD_AA",
+            "RELB_FE",
+            "LSHD_FE",
+            "LSHD_AA",
+            "LELB_FE",
+        )
+        return [f"{_pj}_{_nh}" for _nh in range(Params.MaxHumans) for _pj in joints]
 
 
 def estimate_pose(coldata, pose_est):
@@ -198,7 +264,7 @@ def isRotationMatrix(R):
 # The result is the same as MATLAB except the order
 # of the euler angles ( x and z are swapped ).
 def rotationMatrixToEulerAngles(R):
-    assert (isRotationMatrix(R))
+    assert isRotationMatrix(R)
     sy = math.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
 
     singular = sy < 1e-6
@@ -232,7 +298,7 @@ def get_trunk_angle(camfdf):
         print(_v1)
         _x = _v1 / np.linalg.norm(_v1, 2)
         _v2 = joints["TRUNK"] - joints["RIGHT_SHOULDER"]
-        _y = (_v2 - (_x.T @ _v2) * _x)
+        _y = _v2 - (_x.T @ _v2) * _x
         _y = _y / np.linalg.norm(_y, 2)
         _z = np.array([np.cross(_x.T[0], _y.T[0])]).T
         _R[inx] = np.hstack([_x, _y, _z])
@@ -242,9 +308,11 @@ def get_trunk_angle(camfdf):
         # Compute turnk angle
         if _R0 is not None:
             _dR = _R0.T @ _R[inx]
-            angles[inx] = (rotationMatrixToEulerAngles(_dR) * 180 / np.pi
-                           if ~np.isnan(np.linalg.det(_dR)) else
-                           [np.nan, np.nan, np.nan])
+            angles[inx] = (
+                rotationMatrixToEulerAngles(_dR) * 180 / np.pi
+                if ~np.isnan(np.linalg.det(_dR))
+                else [np.nan, np.nan, np.nan]
+            )
         else:
             angles[inx] = [np.nan, np.nan, np.nan]
 
@@ -264,7 +332,7 @@ def get_rightshoulder_rotmat(camfdf):
         _v1 = joints["LEFT_SHOULDER"] - joints["RIGHT_SHOULDER"]
         _x = _v1 / np.linalg.norm(_v1, 2)
         _v2 = joints["TRUNK"] - joints["RIGHT_SHOULDER"]
-        _y = (_v2 - (_x.T @ _v2) * _x)
+        _y = _v2 - (_x.T @ _v2) * _x
         _y = _y / np.linalg.norm(_y, 2)
         _z = np.array([np.cross(_x.T[0], _y.T[0])]).T
         _R[inx] = np.hstack([_x, _y, _z])
@@ -284,7 +352,7 @@ def get_leftshoulder_rotmat(camfdf):
         _v1 = joints["RIGHT_SHOULDER"] - joints["LEFT_SHOULDER"]
         _x = _v1 / np.linalg.norm(_v1, 2)
         _v2 = joints["TRUNK"] - joints["LEFT_SHOULDER"]
-        _y = (_v2 - (_x.T @ _v2) * _x)
+        _y = _v2 - (_x.T @ _v2) * _x
         _y = _y / np.linalg.norm(_y, 2)
         _z = np.array([np.cross(_x.T[0], _y.T[0])]).T
         _R[inx] = np.hstack([_x, _y, _z])
@@ -363,28 +431,41 @@ def get_leftelbow_angles(camfdf):
 
 
 def get_vector(df, inx, joint):
-    return np.array([[df.loc[inx, f"{joint}_X"],
-                      df.loc[inx, f"{joint}_Y"],
-                      df.loc[inx, f"{joint}_Z"]]]).T
+    return np.array(
+        [
+            [
+                df.loc[inx, f"{joint}_X"],
+                df.loc[inx, f"{joint}_Y"],
+                df.loc[inx, f"{joint}_Z"],
+            ]
+        ]
+    ).T
 
 
 def get_joint_vectors(df, inx, joints):
     return {j: get_vector(df, inx, j) for j in joints}
 
 
-def get_average_position(camfdf, joints=("RIGHT_SHOULDER", "LEFT_SHOULDER", "NECK", "TRUNK")):
+def get_average_position(
+    camfdf, joints=("RIGHT_SHOULDER", "LEFT_SHOULDER", "NECK", "TRUNK")
+):
     refpos = []
     N = len(camfdf)
     for inx in range(N):
         _jpos = get_joint_vectors(camfdf, inx, joints)
-        refpos.append(np.mean([v for k, v in _jpos.items()
-                               if np.isnan(np.sum(v)) == False], axis=0))
+        refpos.append(
+            np.mean(
+                [v for k, v in _jpos.items() if np.isnan(np.sum(v)) == False], axis=0
+            )
+        )
     return np.array(refpos)
 
 
 def get_wrist_pos_wrt_ref(camfdf):
     # Reference position.
-    refpos = get_average_position(camfdf, joints=("RIGHT_SHOULDER", "LEFT_SHOULDER", "NECK"))
+    refpos = get_average_position(
+        camfdf, joints=("RIGHT_SHOULDER", "LEFT_SHOULDER", "NECK")
+    )
     rwrt_pos = []
     lwrt_pos = []
     N = len(camfdf)
@@ -399,62 +480,79 @@ def get_performance_row(camfdf, trnk, rshd, lshd, relb, lelb):
     # Compute data summaries
     rwrt_pos, lwrt_pos = get_wrist_pos_wrt_ref(camfdf)
     # Endpoint space ROM
-    r5, r50, r95 = [np.nanpercentile(rwrt_pos, q=q, axis=0)[:, 0]
-                    for q in (5, 50, 95)]
-    l5, l50, l95 = [np.nanpercentile(lwrt_pos, q=q, axis=0)[:, 0]
-                    for q in (5, 50, 95)]
+    r5, r50, r95 = [np.nanpercentile(rwrt_pos, q=q, axis=0)[:, 0] for q in (5, 50, 95)]
+    l5, l50, l95 = [np.nanpercentile(lwrt_pos, q=q, axis=0)[:, 0] for q in (5, 50, 95)]
     # Trunk angles
-    tx5, tx50, tx95 = [np.nanpercentile(trnk, q=q, axis=0)[0]
-                       for q in (5, 50, 95)]
-    ty5, ty50, ty95 = [np.nanpercentile(trnk, q=q, axis=0)[1]
-                       for q in (5, 50, 95)]
-    tz5, tz50, tz95 = [np.nanpercentile(trnk, q=q, axis=0)[2]
-                       for q in (5, 50, 95)]
+    tx5, tx50, tx95 = [np.nanpercentile(trnk, q=q, axis=0)[0] for q in (5, 50, 95)]
+    ty5, ty50, ty95 = [np.nanpercentile(trnk, q=q, axis=0)[1] for q in (5, 50, 95)]
+    tz5, tz50, tz95 = [np.nanpercentile(trnk, q=q, axis=0)[2] for q in (5, 50, 95)]
 
     # Shoulder angles
-    rsfe5, rsfe50, rsfe95 = [np.nanpercentile(rshd, q=q, axis=0)[0]
-                             for q in (5, 50, 95)]
-    lsfe5, lsfe50, lsfe95 = [np.nanpercentile(lshd, q=q, axis=0)[0]
-                             for q in (5, 50, 95)]
+    rsfe5, rsfe50, rsfe95 = [
+        np.nanpercentile(rshd, q=q, axis=0)[0] for q in (5, 50, 95)
+    ]
+    lsfe5, lsfe50, lsfe95 = [
+        np.nanpercentile(lshd, q=q, axis=0)[0] for q in (5, 50, 95)
+    ]
     # Shoulder angles
-    rsaa5, rsaa50, rsaa95 = [np.nanpercentile(rshd, q=q, axis=0)[1]
-                             for q in (5, 50, 95)]
-    lsaa5, lsaa50, lsaa95 = [np.nanpercentile(lshd, q=q, axis=0)[1]
-                             for q in (5, 50, 95)]
+    rsaa5, rsaa50, rsaa95 = [
+        np.nanpercentile(rshd, q=q, axis=0)[1] for q in (5, 50, 95)
+    ]
+    lsaa5, lsaa50, lsaa95 = [
+        np.nanpercentile(lshd, q=q, axis=0)[1] for q in (5, 50, 95)
+    ]
 
     # Elbow angles
-    refe5, refe50, refe95 = [np.nanpercentile(relb, q=q, axis=0)
-                             for q in (5, 50, 95)]
-    lefe5, lefe50, lefe95 = [np.nanpercentile(lelb, q=q, axis=0)
-                             for q in (5, 50, 95)]
+    refe5, refe50, refe95 = [np.nanpercentile(relb, q=q, axis=0) for q in (5, 50, 95)]
+    lefe5, lefe50, lefe95 = [np.nanpercentile(lelb, q=q, axis=0) for q in (5, 50, 95)]
 
-    return {"rwrst5_x": r5[0],
-            "rwrst5_y": r5[1],
-            "rwrst5_z": r5[2],
-            "rwrst50_x": r50[0],
-            "rwrst50_y": r50[1],
-            "rwrst50_z": r50[2],
-            "rwrst95_x": r95[0],
-            "rwrst95_y": r95[1],
-            "rwrst95_z": r95[2],
-            "lwrst5_x": l5[0],
-            "lwrst5_y": l5[1],
-            "lwrst5_z": l5[2],
-            "lwrst50_x": l50[0],
-            "lwrst50_y": l50[1],
-            "lwrst50_z": l50[2],
-            "lwrst95_x": l95[0],
-            "lwrst95_y": l95[1],
-            "lwrst95_z": l95[2],
-            "trnkx5": tx5, "trnkx50": tx50, "trnkx95": tx95,
-            "trnky5": ty5, "trnky50": ty50, "trnky95": ty95,
-            "trnkz5": tz5, "trnkz50": tz50, "trnkz95": tz95,
-            "rsfe5": rsfe5, "rsfe50": rsfe50, "rsfe95": rsfe95,
-            "lsfe5": lsfe5, "lsfe50": lsfe50, "lsfe95": lsfe95,
-            "rsaa5": rsaa5, "rsaa50": rsaa50, "rsaa95": rsaa95,
-            "lsaa5": lsaa5, "lsaa50": lsaa50, "lsaa95": lsaa95,
-            "refe5": refe5, "refe50": refe50, "refe95": refe95,
-            "lefe5": lefe5, "lefe50": lefe50, "lefe95": lefe95}
+    return {
+        "rwrst5_x": r5[0],
+        "rwrst5_y": r5[1],
+        "rwrst5_z": r5[2],
+        "rwrst50_x": r50[0],
+        "rwrst50_y": r50[1],
+        "rwrst50_z": r50[2],
+        "rwrst95_x": r95[0],
+        "rwrst95_y": r95[1],
+        "rwrst95_z": r95[2],
+        "lwrst5_x": l5[0],
+        "lwrst5_y": l5[1],
+        "lwrst5_z": l5[2],
+        "lwrst50_x": l50[0],
+        "lwrst50_y": l50[1],
+        "lwrst50_z": l50[2],
+        "lwrst95_x": l95[0],
+        "lwrst95_y": l95[1],
+        "lwrst95_z": l95[2],
+        "trnkx5": tx5,
+        "trnkx50": tx50,
+        "trnkx95": tx95,
+        "trnky5": ty5,
+        "trnky50": ty50,
+        "trnky95": ty95,
+        "trnkz5": tz5,
+        "trnkz50": tz50,
+        "trnkz95": tz95,
+        "rsfe5": rsfe5,
+        "rsfe50": rsfe50,
+        "rsfe95": rsfe95,
+        "lsfe5": lsfe5,
+        "lsfe50": lsfe50,
+        "lsfe95": lsfe95,
+        "rsaa5": rsaa5,
+        "rsaa50": rsaa50,
+        "rsaa95": rsaa95,
+        "lsaa5": lsaa5,
+        "lsaa50": lsaa50,
+        "lsaa95": lsaa95,
+        "refe5": refe5,
+        "refe50": refe50,
+        "refe95": refe95,
+        "lefe5": lefe5,
+        "lefe50": lefe50,
+        "lefe95": lefe95,
+    }
 
 
 """
@@ -515,27 +613,27 @@ def generate_pdf(self):
     blocks_no = 20
     maximum_ang = 30
 
-    fpdf = FPDF(orientation='P', unit='mm', format='A4')
+    fpdf = FPDF(orientation="P", unit="mm", format="A4")
     fpdf.add_page()
-    fpdf.set_font("Arial", style='', size=14)
-    fpdf.image('.//src//logo.jpg', x=40, y=10, w=20, h=20)
+    fpdf.set_font("Arial", style="", size=14)
+    fpdf.image(".//src//logo.jpg", x=40, y=10, w=20, h=20)
     fpdf.multi_cell(w=180, h=10, txt="Christian Medical College, Vellore", align="C")
-    fpdf.set_font("Arial", style='', size=16)
+    fpdf.set_font("Arial", style="", size=16)
     fpdf.multi_cell(w=180, h=10, txt="Department of Bioengineering", align="C")
-    fpdf.set_font("Arial", style='', size=18)
+    fpdf.set_font("Arial", style="", size=18)
     fpdf.multi_cell(w=200, h=10, txt="", align="C")
     fpdf.multi_cell(w=100, h=10, txt="Patient Name: XXXX YYYY", align="L")
     fpdf.multi_cell(w=100, h=10, txt="Patient Age\t:  36", align="L")
     fpdf.multi_cell(w=100, h=10, txt="Condition\t\t:  Stroke", align="L")
     fpdf.multi_cell(w=100, h=10, txt="Hospital ID   :  10000G", align="L")
     fpdf.multi_cell(w=100, h=10, txt="Locality       :  Vellore", align="L")
-    fpdf.image('.//src//color.jpeg', x=120, y=40, w=60, h=60)
+    fpdf.image(".//src//color.jpeg", x=120, y=40, w=60, h=60)
 
     fpdf.multi_cell(w=100, h=10, txt=f"", align="L")
     fpdf.multi_cell(w=100, h=10, txt=f"", align="L")
     fpdf.multi_cell(w=100, h=10, txt=f"", align="L")
 
-    fpdf.set_font("times", style='', size=18)
+    fpdf.set_font("times", style="", size=18)
     fpdf.multi_cell(w=100, h=10, txt=f"", align="L")
     fpdf.multi_cell(w=100, h=10, txt=f"", align="L")
     fpdf.multi_cell(w=200, h=10, txt=f"ANALYSIS REPORT", align="C")
@@ -545,6 +643,5 @@ def generate_pdf(self):
 
     fpdf.image(".//src//figure.png", x=0, y=150, w=110, h=100)
     fpdf.image(".//src//figure_scatter.png", x=110, y=150, w=100, h=100)
-    fpdf.output('.//src//report.pdf', 'F')
+    fpdf.output(".//src//report.pdf", "F")
     return "pdf generated"
-

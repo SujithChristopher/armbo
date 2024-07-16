@@ -18,7 +18,7 @@ you can use it for single file using *_sf functions, which is for a single file 
 
 _pth = os.path.dirname(os.getcwd())
 
-calib_pth = os.path.join(_pth,"support", "AR_CALIBRATION.msgpack")
+calib_pth = os.path.join(_pth, "support", "AR_CALIBRATION.msgpack")
 _calib_file = open(calib_pth, "rb")
 unpacker = mp.Unpacker(_calib_file, object_hook=mpn.decode)
 _calib = []
@@ -30,8 +30,9 @@ distCoeffs = _calib[0][1]
 _calib_file.close()
 
 
-def camera_parameters(ar_parameters = None, ar_dictionary = None, markerLength = 0.05, markerSeparation = 0.01):
-
+def camera_parameters(
+    ar_parameters=None, ar_dictionary=None, markerLength=0.05, markerSeparation=0.01
+):
     """
     ar_parameters: aruco camera parameters using 'aruco.DetectorParameters_create()'
     ar_dictionary: dictionary of aruco markers
@@ -47,20 +48,27 @@ def camera_parameters(ar_parameters = None, ar_dictionary = None, markerLength =
     if ar_dictionary is None:
         ARUCO_DICT = aruco.Dictionary_get(aruco.DICT_ARUCO_ORIGINAL)
 
-    
     # Create grid board object we're using in our stream
     board = aruco.GridBoard_create(
-            markersX=1,
-            markersY=1,
-            markerLength=markerLength,
-            markerSeparation=markerSeparation,
-            dictionary=ARUCO_DICT)
+        markersX=1,
+        markersY=1,
+        markerLength=markerLength,
+        markerSeparation=markerSeparation,
+        dictionary=ARUCO_DICT,
+    )
 
     return ARUCO_PARAMETERS, ARUCO_DICT, board
 
 
-def estimate_ar_pose(frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs,is_color= False, ar_params = None, ar_dict = None, board = None):
-
+def estimate_ar_pose(
+    frame,
+    cameraMatrix=cameraMatrix,
+    distCoeffs=distCoeffs,
+    is_color=False,
+    ar_params=None,
+    ar_dict=None,
+    board=None,
+):
     """
     frame: frame to be processed
     cameraMatrix: camera matrix from calibration
@@ -76,26 +84,40 @@ def estimate_ar_pose(frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs,is_
         gray = frame
 
     # ARUCO_PARAMETERS, ARUCO_DICT, board = camera_parameters()
-    
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS)
+
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(
+        gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS
+    )
 
     # Refine detected markers
     # Eliminates markers not part of our board, adds missing markers to the board
     corners, ids, rejectedImgPoints, recoveredIds = aruco.refineDetectedMarkers(
-            image = gray,
-            board = board,
-            detectedCorners = corners,
-            detectedIds = ids,
-            rejectedCorners = rejectedImgPoints,
-            cameraMatrix = cameraMatrix,
-            distCoeffs = distCoeffs)
+        image=gray,
+        board=board,
+        detectedCorners=corners,
+        detectedIds=ids,
+        rejectedCorners=rejectedImgPoints,
+        cameraMatrix=cameraMatrix,
+        distCoeffs=distCoeffs,
+    )
 
-    rotation_vectors, translation_vectors, _objPoints = aruco.estimatePoseSingleMarkers(corners, 0.05, cameraMatrix, distCoeffs)
+    rotation_vectors, translation_vectors, _objPoints = aruco.estimatePoseSingleMarkers(
+        corners, 0.05, cameraMatrix, distCoeffs
+    )
     return rotation_vectors, translation_vectors, _objPoints, ids
 
 
-def get_ar_pose_data(_pth, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, process_raw = False, is_color = True, single_file=False, flip_frame = False, _pth_to_save="", print_display = False):
-
+def get_ar_pose_data(
+    _pth,
+    cameraMatrix=cameraMatrix,
+    distCoeffs=distCoeffs,
+    process_raw=False,
+    is_color=True,
+    single_file=False,
+    flip_frame=False,
+    _pth_to_save="",
+    print_display=False,
+):
     """
     _pth: path to video (msgpack) files containing calibration data
     cameraMatrix: camera matrix from calibration
@@ -116,13 +138,19 @@ def get_ar_pose_data(_pth, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, pro
         targetPattern = f"{_pth}\\COLOUR*"
         color_file_list = glob.glob(targetPattern)
 
-
         for fname in color_file_list:
-            cfile = open(fname, "rb") #colour file
+            cfile = open(fname, "rb")  # colour file
             unpacker = mp.Unpacker(cfile, object_hook=mpn.decode)
             for frame in unpacker:
-
-                rotation_vectors, translation_vectors, _, ids = estimate_ar_pose(frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, is_color = _is_color, ar_params = ar_params, ar_dict = ar_dict, board = board)
+                rotation_vectors, translation_vectors, _, ids = estimate_ar_pose(
+                    frame,
+                    cameraMatrix=cameraMatrix,
+                    distCoeffs=distCoeffs,
+                    is_color=_is_color,
+                    ar_params=ar_params,
+                    ar_dict=ar_dict,
+                    board=board,
+                )
                 if ids is not None:
                     data = [ids[0][0]]
                 else:
@@ -135,17 +163,18 @@ def get_ar_pose_data(_pth, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, pro
                 else:
                     data.extend([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
                     df.loc[len(df)] = data
-                
+
             cfile.close()
     elif not single_file:
-
         vid_pth = os.path.join(_pth, "Video.avi")
         cap = cv2.VideoCapture(vid_pth)
 
         while cap.isOpened():
             ret, frame = cap.read()
             if ret:
-                rotation_vectors, translation_vectors, _ , ids = estimate_ar_pose(frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs)
+                rotation_vectors, translation_vectors, _, ids = estimate_ar_pose(
+                    frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs
+                )
 
                 data = []
                 if rotation_vectors is not None:
@@ -155,21 +184,27 @@ def get_ar_pose_data(_pth, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, pro
                 else:
                     data.extend([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
                     df.loc[len(df)] = data
-                
+
                 rotation_vectors = None
                 translation_vectors = None
-                
+
             else:
                 break
         cap.release()
     else:
-
-        cfile = open(_pth, "rb") #colour file
+        cfile = open(_pth, "rb")  # colour file
         unpacker = mp.Unpacker(cfile, object_hook=mpn.decode)
         for frame in unpacker:
             if flip_frame:
                 frame = cv2.flip(frame, 1)
-            rotation_vectors, translation_vectors, _, ids = estimate_ar_pose(frame, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, ar_params = ar_params, ar_dict = ar_dict, board = board)
+            rotation_vectors, translation_vectors, _, ids = estimate_ar_pose(
+                frame,
+                cameraMatrix=cameraMatrix,
+                distCoeffs=distCoeffs,
+                ar_params=ar_params,
+                ar_dict=ar_dict,
+                board=board,
+            )
             data = []
             if ids is not None:
                 data = [ids[0][0]]
@@ -183,14 +218,14 @@ def get_ar_pose_data(_pth, cameraMatrix=cameraMatrix, distCoeffs=distCoeffs, pro
             else:
                 data.extend([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
                 df.loc[len(df)] = data
-            
+
         cfile.close()
     if print_display:
         print("returning dataframe")
     return df
 
-def detect_ar_markers(frame, ar_params = None, ar_dict = None, board = None):
 
+def detect_ar_markers(frame, ar_params=None, ar_dict=None, board=None):
     """
     frame: frame to be processed
     cameraMatrix: camera matrix from calibration
@@ -203,13 +238,15 @@ def detect_ar_markers(frame, ar_params = None, ar_dict = None, board = None):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # ARUCO_PARAMETERS, ARUCO_DICT, board = camera_parameters()
-    
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS)
+
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(
+        gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS
+    )
 
     return corners, ids, rejectedImgPoints
 
+
 def add_time_col(df, _pth):
-    
     targetPattern = f"{_pth}\\PARAM*"
     param_file = glob.glob(targetPattern)[0]
 
@@ -218,22 +255,21 @@ def add_time_col(df, _pth):
         unpacker = mp.Unpacker(f, object_hook=mpn.decode)
         _tmp = []
         for counter, _obj in enumerate(unpacker):
-            if counter >1:
-
+            if counter > 1:
                 _tmp.append(_obj[0])
-            
+
         df["time"] = _tmp
-    
+
     return df
 
 
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     # print("hi")
     try:
-        get_ar_pose_data(r"C:\Users\CMC\Dropbox\mira\mira_vellore\splitVideos\SUJIXXXXXXXXU010120000000XXXXXXXXX\test_trial_0", process_raw=True)
+        get_ar_pose_data(
+            r"C:\Users\CMC\Dropbox\mira\mira_vellore\splitVideos\SUJIXXXXXXXXU010120000000XXXXXXXXX\test_trial_0",
+            process_raw=True,
+        )
     except:
         pass
     print("in a different computer")

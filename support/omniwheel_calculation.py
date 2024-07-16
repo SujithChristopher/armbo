@@ -1,7 +1,8 @@
 import numpy as np
 import polars as pl
 
-def set_zero(df, column_name = ["e_t", "e_rr", "e_rl"]):
+
+def set_zero(df, column_name=["e_t", "e_rr", "e_rl"]):
     """
     Set the value of the column to 0
     """
@@ -10,17 +11,19 @@ def set_zero(df, column_name = ["e_t", "e_rr", "e_rl"]):
 
     if not isinstance(df, pl.DataFrame):
         df = pl.from_pandas(df)
-        inst = False 
+        inst = False
 
     for i in column_name:
         df = df.with_columns([pl.col(i).apply(lambda x: x - df[i][0])])
 
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
     return df
-    
 
-def get_angular_velocity(df, column_name = ["e_t", "e_rr", "e_rl"], ang_per_increment = 0.09, del_t = 0.01):
+
+def get_angular_velocity(
+    df, column_name=["e_t", "e_rr", "e_rl"], ang_per_increment=0.09, del_t=0.01
+):
     """
     Calculate the angular velocity of the robot
     """
@@ -28,26 +31,33 @@ def get_angular_velocity(df, column_name = ["e_t", "e_rr", "e_rl"], ang_per_incr
 
     if not isinstance(df, pl.DataFrame):
         df = pl.from_pandas(df)
-        inst = False 
+        inst = False
 
     # Calculate the angular velocity
     for name in column_name:
-        df = df.with_columns([pl.col(name).apply(lambda x: x * ang_per_increment).alias(name + "_angle")])
-        df = df.with_columns([((pl.col(name + "_angle").diff()/ del_t)*np.pi/180).alias(name + "_av")])
+        df = df.with_columns(
+            [pl.col(name).apply(lambda x: x * ang_per_increment).alias(name + "_angle")]
+        )
+        df = df.with_columns(
+            [
+                ((pl.col(name + "_angle").diff() / del_t) * np.pi / 180).alias(
+                    name + "_av"
+                )
+            ]
+        )
         # replace null values with 0
         df = df.fill_null(0)
-    
+
     _ang_column = []
     for i in column_name:
         _ang_column.append(i + "_av")
 
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
     return df, _ang_column
 
 
-def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1, rmat = None):
-
+def get_directional_velocity(df, column_name, radius=1, x=1, y=1, rmat=None):
     """
     Calculate the directional velocity of the robot
     """
@@ -69,35 +79,44 @@ def get_directional_velocity(df, column_name, radius = 1, x = 1, y = 1, rmat = N
 
     if not isinstance(df, pl.DataFrame):
         df = pl.from_pandas(df)
-        inst = False 
+        inst = False
 
-    mat = np.array([[-y, 1, 0], [-x, 0, -1], [x, 0, -1]]) # matrix for calculating the directional velocity
+    mat = np.array(
+        [[-y, 1, 0], [-x, 0, -1], [x, 0, -1]]
+    )  # matrix for calculating the directional velocity
     # mat = np.array([[y, 1, 0], [-x, 0, 1], [-x, 0, 1]])
     pmat = np.linalg.pinv(mat)
 
     if rmat is not None:
         pmat = rmat @ pmat
-        
-    my_dict = {"_vx":[],"_vy":[],"_w":[]}
+
+    my_dict = {"_vx": [], "_vy": [], "_w": []}
 
     for i in range(len(df)):
-        val = np.array([df[column_name[0]][i], df[column_name[1]][i], df[column_name[2]][i]]).reshape(3,1)
+        val = np.array(
+            [df[column_name[0]][i], df[column_name[1]][i], df[column_name[2]][i]]
+        ).reshape(3, 1)
         res = np.dot(pmat, val) * radius
         my_dict["_w"].append(res[0][0])
         my_dict["_vx"].append(res[1][0])
         my_dict["_vy"].append(res[2][0])
 
     # add the calculated values to the dataframe
-    df = df.with_columns([pl.Series(name = "vx", values = my_dict["_vx"]),
-                        pl.Series(name = "vy", values = my_dict["_vy"]),
-                            pl.Series(name = "w", values = my_dict["_w"])])
-    
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+    df = df.with_columns(
+        [
+            pl.Series(name="vx", values=my_dict["_vx"]),
+            pl.Series(name="vy", values=my_dict["_vy"]),
+            pl.Series(name="w", values=my_dict["_w"]),
+        ]
+    )
+
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
 
     return df, df.columns
 
-def get_position(df, dt = 0.01):
+
+def get_position(df, dt=0.01):
     """
     Calculate the position of the robot
 
@@ -107,23 +126,26 @@ def get_position(df, dt = 0.01):
 
     if not isinstance(df, pl.DataFrame):
         df = pl.from_pandas(df)
-        inst = False 
+        inst = False
     # # calculate the cumulative sum of the values multiplied by dt
-    
+
     # df = df.with_columns([(pl.col("vx").cumsum() * dt *0.5).alias("x"),
     #                         (pl.col("vy").cumsum() * dt *0.5).alias("y")])
-    
-    df = df.with_columns([(pl.col("vx").cumsum() * dt).alias("x"),
-                            (pl.col("vy").cumsum() * dt).alias("y")])
-    
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+
+    df = df.with_columns(
+        [
+            (pl.col("vx").cumsum() * dt).alias("x"),
+            (pl.col("vy").cumsum() * dt).alias("y"),
+        ]
+    )
+
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
-    
+
     return df, ["x", "y"]
 
 
-def get_orientation(df, dt = 0.01, column_name = "w"):
-
+def get_orientation(df, dt=0.01, column_name="w"):
     """
     Calculate the angle of the chasis, with respect to initial frame
 
@@ -142,15 +164,13 @@ def get_orientation(df, dt = 0.01, column_name = "w"):
 
     df = df.with_columns([(pl.col("w").cumsum() * dt).alias("theta")])
 
-
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
 
     return df, ["theta"]
 
 
-def get_orientation_dt(df, column_name = "w", dt = []):
-
+def get_orientation_dt(df, column_name="w", dt=[]):
     """
     Calculate the angle of the chasis, with respect to initial frame
 
@@ -165,20 +185,19 @@ def get_orientation_dt(df, column_name = "w", dt = []):
     if not column_name:
         column_name = "w"
 
-    my_dict = {"_theta":[]}
+    my_dict = {"_theta": []}
     angle = 0
     for i in range(len(df[column_name])):
-
         if i == 0:
             my_dict["_theta"].append(0)
         else:
-            angle = angle + (df[column_name][i] + df[column_name][i-1])*dt[i]
+            angle = angle + (df[column_name][i] + df[column_name][i - 1]) * dt[i]
             my_dict["_theta"].append(angle)
 
     # add the calculated values to the dataframe
-    df = df.with_columns([pl.Series(name = "theta", values = my_dict["_theta"])])
+    df = df.with_columns([pl.Series(name="theta", values=my_dict["_theta"])])
 
-    if not inst: # if the input is not a polars dataframe, convert it to pandas dataframe when returning
+    if not inst:  # if the input is not a polars dataframe, convert it to pandas dataframe when returning
         df = df.to_pandas()
 
     return df, ["theta"]

@@ -16,7 +16,9 @@ from pykinect2.PyKinectRuntime import _CameraSpacePoint
 # from support_py import *
 from mapper import color_2_world
 
-_kinect = PyKinectRuntime.PyKinectRuntime(PyKinectV2.FrameSourceTypes_Depth | PyKinectV2.FrameSourceTypes_Color)
+_kinect = PyKinectRuntime.PyKinectRuntime(
+    PyKinectV2.FrameSourceTypes_Depth | PyKinectV2.FrameSourceTypes_Color
+)
 
 
 def camspace(pth, res_s=False):
@@ -74,7 +76,9 @@ def camspace(pth, res_s=False):
                     l1 += 1
                     bb = ctypes.cast(depthFrame.ctypes, ctypes.POINTER(c_ushort))
                     depthData = color_2_world(_kinect, bb, _CameraSpacePoint, True)
-                    depXYZraw = depthData[yPos * 2:yPos * 2 + yRes, xPos * 2:xPos * 2 + xRes].copy()
+                    depXYZraw = depthData[
+                        yPos * 2 : yPos * 2 + yRes, xPos * 2 : xPos * 2 + xRes
+                    ].copy()
                     # depXYZraw = cv2.flip(depXYZraw, 1)
                     if res_s:
                         depXYZ = depXYZraw
@@ -104,4 +108,6 @@ def camspace(pth, res_s=False):
 
 
 if __name__ == "__main__":
-    camspace(r"C:\Users\CMC\Dropbox\mira\mira_vellore\splitVideos\SUJIXXXXXXXXU010120000000XXXXXXXXX\calibration")
+    camspace(
+        r"C:\Users\CMC\Dropbox\mira\mira_vellore\splitVideos\SUJIXXXXXXXXU010120000000XXXXXXXXX\calibration"
+    )

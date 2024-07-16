@@ -26,7 +26,9 @@ def read_df_csv(filename, offset=2):
     cols_list = raw.columns  # first row which contains capture start time
     inx = [i for i, x in enumerate(cols_list) if x == "Capture Start Time"]
     st_time = cols_list[inx[0] + 1]
-    st_time = datetime.strptime(st_time, "%Y-%m-%d %I.%M.%S.%f %p")  # returns datetime object
+    st_time = datetime.strptime(
+        st_time, "%Y-%m-%d %I.%M.%S.%f %p"
+    )  # returns datetime object
 
     mr_inx = pd.read_csv(pth, skiprows=3)
     markers_raw = mr_inx.columns
@@ -71,9 +73,9 @@ def add_datetime_diff(df, _time, _sync, _diff_name, truncate=False):
     """
     df:         dataframe
     _time:      the time you want to start your column with
-    _sync:      Name of the column with external sync which turns 1 when your recording 
+    _sync:      Name of the column with external sync which turns 1 when your recording
                 your data and 0 when your not
-    _diff_name: external time/ other time which you want to find the difference 
+    _diff_name: external time/ other time which you want to find the difference
                 and add them to the _time column to sync clock
     truncate:   truncate will also cut the values after your _sync goes to 0
     """
@@ -144,7 +146,7 @@ def interpolate_target_df(target_df, reference_df, col_names=None):
     target_df = target_df.reset_index(drop=True)
     reference_df = reference_df.reset_index(drop=True)
 
-    # column names 
+    # column names
     if col_names is None:
         col_names = ["frame_id", "x", "y", "z", "yaw", "pitch", "roll"]
 
@@ -152,11 +154,19 @@ def interpolate_target_df(target_df, reference_df, col_names=None):
     df["time"] = reference_df.time
 
     # change reference time to float
-    reference_df["time"] = reference_df["time"].dt.hour * 3600 + reference_df["time"].dt.minute * 60 + reference_df[
-        "time"].dt.second + reference_df["time"].dt.microsecond / 1000000
+    reference_df["time"] = (
+        reference_df["time"].dt.hour * 3600
+        + reference_df["time"].dt.minute * 60
+        + reference_df["time"].dt.second
+        + reference_df["time"].dt.microsecond / 1000000
+    )
     # change target time to float
-    target_df["time"] = target_df["time"].dt.hour * 3600 + target_df["time"].dt.minute * 60 + target_df[
-        "time"].dt.second + target_df["time"].dt.microsecond / 1000000
+    target_df["time"] = (
+        target_df["time"].dt.hour * 3600
+        + target_df["time"].dt.minute * 60
+        + target_df["time"].dt.second
+        + target_df["time"].dt.microsecond / 1000000
+    )
 
     new_cols = []
     for i in col_names:
@@ -228,7 +238,9 @@ def read_rigid_body_csv(_pth):
     cols_list = raw_df.columns  # first row which contains capture start time
     inx = [i for i, x in enumerate(cols_list) if x == "Capture Start Time"]
     st_time = cols_list[inx[0] + 1]
-    st_time = datetime.strptime(st_time, "%Y-%m-%d %I.%M.%S.%f %p")  # returns datetime object
+    st_time = datetime.strptime(
+        st_time, "%Y-%m-%d %I.%M.%S.%f %p"
+    )  # returns datetime object
 
     _marker_type = []
     for idx in df.columns:
@@ -289,7 +301,9 @@ def read_rigid_body_csv(_pth):
                 _col = _rb_df[i].iloc[3].lower()
                 col_names.append("rb_marker_m" + str(_col_head) + "_" + _col)
             else:
-                col_names.append("rb_marker_m" + str(_col_head) + "_mq")  # marker quality
+                col_names.append(
+                    "rb_marker_m" + str(_col_head) + "_mq"
+                )  # marker quality
 
     # individual marker section
 
@@ -309,7 +323,7 @@ def read_rigid_body_csv(_pth):
 
     # reset index
     _rb_df = _rb_df.reset_index(drop=True)
-    _rb_df = _rb_df.apply(pd.to_numeric, errors='ignore')
+    _rb_df = _rb_df.apply(pd.to_numeric, errors="ignore")
 
     return _rb_df, st_time
 
@@ -319,12 +333,14 @@ def get_marker_name(val):
     """
     this function is for rigid body markers
     it generates the marker names for the rigid body markers
-    using the given integer value    
+    using the given integer value
     """
     # create using dictionary
-    _val = {"x": "m" + str(val) + "_x",
-            "y": "m" + str(val) + "_y",
-            "z": "m" + str(val) + "_z", }
+    _val = {
+        "x": "m" + str(val) + "_x",
+        "y": "m" + str(val) + "_y",
+        "z": "m" + str(val) + "_z",
+    }
 
     return _val
 
@@ -334,11 +350,13 @@ def get_rb_marker_name(val):
     """
     this function is for rigid body markers
     it generates the marker names for the rigid body markers
-    using the given integer value    
+    using the given integer value
     """
     # create using dictionary
-    _val = {"x": "rb_marker_m" + str(val) + "_x",
-            "y": "rb_marker_m" + str(val) + "_y",
-            "z": "rb_marker_m" + str(val) + "_z", }
+    _val = {
+        "x": "rb_marker_m" + str(val) + "_x",
+        "y": "rb_marker_m" + str(val) + "_y",
+        "z": "rb_marker_m" + str(val) + "_z",
+    }
 
     return _val
