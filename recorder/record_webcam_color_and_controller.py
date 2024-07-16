@@ -4,18 +4,13 @@ this program records data from webcam and teensy controller
 
 import cv2
 import os
-import sys
-import datetime
 import keyboard
 import msgpack as mp
 import msgpack_numpy as mpn
-import fpstimer
 import multiprocessing
 from threading import Thread
-from sensor_stream import SerialPort
-import getopt
+from sync_stream import SerialPort
 import argparse
-import logging
 import time
 
 from deep_vision import rs_time
@@ -50,9 +45,6 @@ class RecordData:
                 os.path.join(self._pth, "webcam_timestamp.msgpack"), "wb"
             )
 
-        # prev_frame_time = 0   # for fps display
-        # new_frame_time = 0
-
         while True:
             ret, frame = cap.read()
             if ret:
@@ -61,14 +53,9 @@ class RecordData:
                 if self.record_camera and self.start_recording:
                     _packed_file = mp.packb(gray_image, default=mpn.encode)
                     _save_file.write(_packed_file)
-                    # _time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-                    # print(_time_stamp)
                     _time_stamp = rs_time()
                     _packed_timestamp = mp.packb([_time_stamp, "c"], default=mpn.encode)
-                    print(_packed_timestamp)
                     _timestamp_file.write(_packed_timestamp)
-
-                # fpstimer.FPSTimer(self.fps_val)
 
                 if self.display:
                     # # fps display
@@ -113,23 +100,20 @@ class RecordData:
 
         if cart_sensors and not self.record_camera:
             myport = SerialPort(
-                "COM4",
+                "COM3",
                 115200,
                 csv_path=self._pth,
                 csv_enable=True,
-                single_file_protocol=True,
-                dof=9,
             )
             cart_sensors = Thread(target=myport.run_program)
             cart_sensors.start()
 
         if cart_sensors and self.record_camera:
             myport = SerialPort(
-                "COM4",
+                "COM3",
                 115200,
                 csv_path=self._pth,
                 csv_enable=True,
-                single_file_protocol=True,
             )
             cart_sensors = Thread(target=myport.run_program)
             webcam_capture_frame = multiprocessing.Process(target=self.capture_webcam)
@@ -172,9 +156,7 @@ if __name__ == "__main__":
             _name = input("Enter the name of the recording: ")
         display = True
         _pth = None  # this is default do not change, path gets updated by your input
-        _folder_name = (
-            "paper"  # this is the parent folder name where the data will be saved
-        )
+        _folder_name = "five_marker_validation"  # this is the parent folder name where the data will be saved
 
     else:
         print("Arguments passed")

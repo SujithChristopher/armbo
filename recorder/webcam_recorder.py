@@ -105,7 +105,6 @@ class RecordData:
                     _packed_timestamp = mp.packb(_time_stamp)
                     _timestamp_file.write(_packed_timestamp)
 
-
                 if self.display:
                     # # fps display
                     # font = cv2.FONT_HERSHEY_SIMPLEX
@@ -149,7 +148,7 @@ class RecordData:
 
         if cart_sensors and not self.record_camera:
             myport = SerialPort(
-                "COM7",
+                "COM3",
                 115200,
                 csv_path=self._pth,
                 csv_enable=True,
@@ -161,7 +160,7 @@ class RecordData:
 
         if cart_sensors and self.record_camera:
             myport = SerialPort(
-                "COM7",
+                "COM3",
                 115200,
                 csv_path=self._pth,
                 csv_enable=True,
