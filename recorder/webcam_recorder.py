@@ -201,7 +201,7 @@ if __name__ == "__main__":
 
         """Enter the respective parameters"""
         record_camera = True
-        record_sensors = True
+        record_sensors = False
 
         if record_camera or record_sensors:
             _name = input("Enter the name of the recording: ")
